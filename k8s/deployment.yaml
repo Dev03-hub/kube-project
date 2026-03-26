@@ -17,3 +17,16 @@ spec:
           image: devhub01553/user-service:latest
           ports:
             - containerPort: 5000
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5
