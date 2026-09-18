@@ -4,29 +4,48 @@ metadata:
   name: user-service
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: user-service
+
   template:
     metadata:
       labels:
         app: user-service
+
     spec:
       containers:
         - name: user-service
           image: devhub01553/user-service:latest
-          ports:
-            - containerPort: 5000
-livenessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 10
-  periodSeconds: 10
 
-readinessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 5
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
